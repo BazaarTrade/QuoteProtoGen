@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "/pb";
+
+service Quote {
+    rpc GetOrderBookSnapshot(Ping) returns (stream PrecisedOrderBookSnapshots) {}
+}
+
+message Ping {
+    string Ping = 1;
+}
+
+message PrecisedOrderBookSnapshots {
+    map<int32, OrderBookSnapshot> PrecisedOrderBookSnapshot = 1;
+}
+
+message OrderBookSnapshot {
+    string Symbol = 1;
+    repeated Limit Bids = 2;
+    repeated Limit Asks = 3;
+    string BidsQty = 4;
+    string AsksQty = 5;
+}
+
+message Limit {
+    string Price = 1;
+    string Qty = 2;
+}
