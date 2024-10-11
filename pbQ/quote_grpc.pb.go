@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.27.3
-// source: proto/api.proto
+// source: proto/quote.proto
 
-package pb
+package pbQ
 
 import (
 	context "context"
@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Quote_GetOrderBookSnapshot_FullMethodName = "/pb.Quote/GetOrderBookSnapshot"
+	Quote_StreamPrecisedOrderBookSnapshot_FullMethodName = "/pbQ.Quote/StreamPrecisedOrderBookSnapshot"
 )
 
 // QuoteClient is the client API for Quote service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QuoteClient interface {
-	GetOrderBookSnapshot(ctx context.Context, in *Ping, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PrecisedOrderBookSnapshots], error)
+	StreamPrecisedOrderBookSnapshot(ctx context.Context, in *Ping, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PrecisedOrderBookSnapshots], error)
 }
 
 type quoteClient struct {
@@ -37,9 +37,9 @@ func NewQuoteClient(cc grpc.ClientConnInterface) QuoteClient {
 	return &quoteClient{cc}
 }
 
-func (c *quoteClient) GetOrderBookSnapshot(ctx context.Context, in *Ping, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PrecisedOrderBookSnapshots], error) {
+func (c *quoteClient) StreamPrecisedOrderBookSnapshot(ctx context.Context, in *Ping, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PrecisedOrderBookSnapshots], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &Quote_ServiceDesc.Streams[0], Quote_GetOrderBookSnapshot_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &Quote_ServiceDesc.Streams[0], Quote_StreamPrecisedOrderBookSnapshot_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -54,13 +54,13 @@ func (c *quoteClient) GetOrderBookSnapshot(ctx context.Context, in *Ping, opts .
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Quote_GetOrderBookSnapshotClient = grpc.ServerStreamingClient[PrecisedOrderBookSnapshots]
+type Quote_StreamPrecisedOrderBookSnapshotClient = grpc.ServerStreamingClient[PrecisedOrderBookSnapshots]
 
 // QuoteServer is the server API for Quote service.
 // All implementations must embed UnimplementedQuoteServer
 // for forward compatibility.
 type QuoteServer interface {
-	GetOrderBookSnapshot(*Ping, grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]) error
+	StreamPrecisedOrderBookSnapshot(*Ping, grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]) error
 	mustEmbedUnimplementedQuoteServer()
 }
 
@@ -71,8 +71,8 @@ type QuoteServer interface {
 // pointer dereference when methods are called.
 type UnimplementedQuoteServer struct{}
 
-func (UnimplementedQuoteServer) GetOrderBookSnapshot(*Ping, grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]) error {
-	return status.Errorf(codes.Unimplemented, "method GetOrderBookSnapshot not implemented")
+func (UnimplementedQuoteServer) StreamPrecisedOrderBookSnapshot(*Ping, grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamPrecisedOrderBookSnapshot not implemented")
 }
 func (UnimplementedQuoteServer) mustEmbedUnimplementedQuoteServer() {}
 func (UnimplementedQuoteServer) testEmbeddedByValue()               {}
@@ -95,30 +95,30 @@ func RegisterQuoteServer(s grpc.ServiceRegistrar, srv QuoteServer) {
 	s.RegisterService(&Quote_ServiceDesc, srv)
 }
 
-func _Quote_GetOrderBookSnapshot_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Quote_StreamPrecisedOrderBookSnapshot_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Ping)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(QuoteServer).GetOrderBookSnapshot(m, &grpc.GenericServerStream[Ping, PrecisedOrderBookSnapshots]{ServerStream: stream})
+	return srv.(QuoteServer).StreamPrecisedOrderBookSnapshot(m, &grpc.GenericServerStream[Ping, PrecisedOrderBookSnapshots]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Quote_GetOrderBookSnapshotServer = grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]
+type Quote_StreamPrecisedOrderBookSnapshotServer = grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]
 
 // Quote_ServiceDesc is the grpc.ServiceDesc for Quote service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Quote_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.Quote",
+	ServiceName: "pbQ.Quote",
 	HandlerType: (*QuoteServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetOrderBookSnapshot",
-			Handler:       _Quote_GetOrderBookSnapshot_Handler,
+			StreamName:    "StreamPrecisedOrderBookSnapshot",
+			Handler:       _Quote_StreamPrecisedOrderBookSnapshot_Handler,
 			ServerStreams: true,
 		},
 	},
-	Metadata: "proto/api.proto",
+	Metadata: "proto/quote.proto",
 }

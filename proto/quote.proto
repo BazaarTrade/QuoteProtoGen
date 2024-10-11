@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package pb;
+package pbQ;
 
-option go_package = "/pb";
+option go_package = "/pbQ";
 
 service Quote {
-    rpc GetOrderBookSnapshot(Ping) returns (stream PrecisedOrderBookSnapshots) {}
+    rpc StreamPrecisedOrderBookSnapshot(Ping) returns (stream PrecisedOrderBookSnapshots) {}
 }
 
 message Ping {
