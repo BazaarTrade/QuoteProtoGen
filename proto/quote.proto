@@ -4,12 +4,25 @@ package pbQ;
 
 option go_package = "/pbQ";
 
+import "google/protobuf/timestamp.proto";
+
 service Quote {
+    rpc StreamPrecisedTrades(Ping) returns (stream Trades) {}
     rpc StreamPrecisedOrderBookSnapshot(Ping) returns (stream PrecisedOrderBookSnapshots) {}
 }
 
-message Ping {
-    string Ping = 1;
+message Ping {}
+
+message Trades {
+    string Symbol = 1;
+    repeated Trade Trade = 2;
+}
+
+message Trade {
+    bool IsBid = 1;
+    string Price = 2;
+    string Qty = 3;
+    google.protobuf.Timestamp Time = 4;
 }
 
 message PrecisedOrderBookSnapshots {
