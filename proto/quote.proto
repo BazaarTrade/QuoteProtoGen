@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package pbQ;
+
+option go_package = "/pbQ";
+
+import "google/protobuf/timestamp.proto";
+
+service Quote {
+    rpc StreamPrecisedTrades(Ping) returns (stream Trades) {}
+    rpc StreamPrecisedOrderBookSnapshot(Ping) returns (stream PrecisedOrderBookSnapshots) {}
+}
+
+message Ping {}
+
+message Trades {
+    string Symbol = 1;
+    repeated Trade Trades = 2;
+}
+
+message Trade {
+    bool IsBid = 1;
+    string Price = 2;
+    string Qty = 3;
+    google.protobuf.Timestamp Time = 4;
+}
+
+message PrecisedOrderBookSnapshots {
+    map<int32, OrderBookSnapshot> PrecisedOrderBookSnapshot = 1;
+}
+
+message OrderBookSnapshot {
+    string Symbol = 1;
+    repeated Limit Bids = 2;
+    repeated Limit Asks = 3;
+    string BidsQty = 4;
+    string AsksQty = 5;
+}
+
+message Limit {
+    string Price = 1;
+    string Qty = 2;
+}
