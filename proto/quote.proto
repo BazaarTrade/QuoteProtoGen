@@ -5,16 +5,28 @@ package pbQ;
 option go_package = "/pbQ";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 service Quote {
-    rpc StreamPrecisedTrades(Ping) returns (stream Trades) {}
-    rpc StreamPrecisedOrderBookSnapshot(Ping) returns (stream PrecisedOrderBookSnapshots) {}
+    rpc StreamPrecisedTrades(Pair) returns (stream Trades) {}
+    rpc StreamPrecisedOrderBookSnapshot(Pair) returns (stream PrecisedOrderBookSnapshots) {}
+    
+    rpc CreateOrderBook(PairParams) returns (google.protobuf.Empty) {}
+    rpc DeleteOrderBook(Pair) returns (google.protobuf.Empty) {}
 }
 
-message Ping {}
+message Pair {
+    string Pair = 1;
+}
+
+message PairParams {
+    string Pair = 1;
+    repeated int32 PricePrecisions = 2;
+    int32 QtyPrecision = 3;
+}
 
 message Trades {
-    string Symbol = 1;
+    string Pair = 1;
     repeated Trade Trades = 2;
 }
 
@@ -30,7 +42,7 @@ message PrecisedOrderBookSnapshots {
 }
 
 message OrderBookSnapshot {
-    string Symbol = 1;
+    string Pair = 1;
     repeated Limit Bids = 2;
     repeated Limit Asks = 3;
     string BidsQty = 4;
