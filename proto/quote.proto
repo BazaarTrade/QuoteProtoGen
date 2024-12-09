@@ -10,6 +10,7 @@ import "google/protobuf/empty.proto";
 service Quote {
     rpc StreamPrecisedTrades(Pair) returns (stream Trades) {}
     rpc StreamPrecisedOrderBookSnapshot(Pair) returns (stream PrecisedOrderBookSnapshots) {}
+    rpc StreamTicker(Pair) returns (stream Ticker) {}
     
     rpc CreateOrderBook(PairParams) returns (google.protobuf.Empty) {}
     rpc DeleteOrderBook(Pair) returns (google.protobuf.Empty) {}
@@ -47,6 +48,14 @@ message OrderBookSnapshot {
     repeated Limit Asks = 3;
     string BidsQty = 4;
     string AsksQty = 5;
+}
+
+message Ticker {
+    string Price = 1;
+    string Change = 2;
+    string HighPrice = 3;
+    string LowPrice = 4;
+    string Turnover = 5;
 }
 
 message Limit {

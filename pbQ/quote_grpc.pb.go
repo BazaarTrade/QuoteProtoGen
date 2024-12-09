@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Quote_StreamPrecisedTrades_FullMethodName            = "/pbQ.Quote/StreamPrecisedTrades"
 	Quote_StreamPrecisedOrderBookSnapshot_FullMethodName = "/pbQ.Quote/StreamPrecisedOrderBookSnapshot"
+	Quote_StreamTicker_FullMethodName                    = "/pbQ.Quote/StreamTicker"
 	Quote_CreateOrderBook_FullMethodName                 = "/pbQ.Quote/CreateOrderBook"
 	Quote_DeleteOrderBook_FullMethodName                 = "/pbQ.Quote/DeleteOrderBook"
 )
@@ -32,6 +33,7 @@ const (
 type QuoteClient interface {
 	StreamPrecisedTrades(ctx context.Context, in *Pair, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Trades], error)
 	StreamPrecisedOrderBookSnapshot(ctx context.Context, in *Pair, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PrecisedOrderBookSnapshots], error)
+	StreamTicker(ctx context.Context, in *Pair, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Ticker], error)
 	CreateOrderBook(ctx context.Context, in *PairParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteOrderBook(ctx context.Context, in *Pair, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -82,6 +84,25 @@ func (c *quoteClient) StreamPrecisedOrderBookSnapshot(ctx context.Context, in *P
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Quote_StreamPrecisedOrderBookSnapshotClient = grpc.ServerStreamingClient[PrecisedOrderBookSnapshots]
 
+func (c *quoteClient) StreamTicker(ctx context.Context, in *Pair, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Ticker], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &Quote_ServiceDesc.Streams[2], Quote_StreamTicker_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[Pair, Ticker]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Quote_StreamTickerClient = grpc.ServerStreamingClient[Ticker]
+
 func (c *quoteClient) CreateOrderBook(ctx context.Context, in *PairParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -108,6 +129,7 @@ func (c *quoteClient) DeleteOrderBook(ctx context.Context, in *Pair, opts ...grp
 type QuoteServer interface {
 	StreamPrecisedTrades(*Pair, grpc.ServerStreamingServer[Trades]) error
 	StreamPrecisedOrderBookSnapshot(*Pair, grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]) error
+	StreamTicker(*Pair, grpc.ServerStreamingServer[Ticker]) error
 	CreateOrderBook(context.Context, *PairParams) (*emptypb.Empty, error)
 	DeleteOrderBook(context.Context, *Pair) (*emptypb.Empty, error)
 	mustEmbedUnimplementedQuoteServer()
@@ -125,6 +147,9 @@ func (UnimplementedQuoteServer) StreamPrecisedTrades(*Pair, grpc.ServerStreaming
 }
 func (UnimplementedQuoteServer) StreamPrecisedOrderBookSnapshot(*Pair, grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamPrecisedOrderBookSnapshot not implemented")
+}
+func (UnimplementedQuoteServer) StreamTicker(*Pair, grpc.ServerStreamingServer[Ticker]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamTicker not implemented")
 }
 func (UnimplementedQuoteServer) CreateOrderBook(context.Context, *PairParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrderBook not implemented")
@@ -174,6 +199,17 @@ func _Quote_StreamPrecisedOrderBookSnapshot_Handler(srv interface{}, stream grpc
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Quote_StreamPrecisedOrderBookSnapshotServer = grpc.ServerStreamingServer[PrecisedOrderBookSnapshots]
+
+func _Quote_StreamTicker_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Pair)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(QuoteServer).StreamTicker(m, &grpc.GenericServerStream[Pair, Ticker]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Quote_StreamTickerServer = grpc.ServerStreamingServer[Ticker]
 
 func _Quote_CreateOrderBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PairParams)
@@ -236,6 +272,11 @@ var Quote_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "StreamPrecisedOrderBookSnapshot",
 			Handler:       _Quote_StreamPrecisedOrderBookSnapshot_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "StreamTicker",
+			Handler:       _Quote_StreamTicker_Handler,
 			ServerStreams: true,
 		},
 	},
