@@ -11,6 +11,7 @@ service Quote {
     rpc StreamPrecisedTrade(Pair) returns (stream Trade) {}
     rpc StreamPrecisedOrderBookSnapshot(Pair) returns (stream PrecisedOrderBookSnapshots) {}
     rpc StreamTicker(Pair) returns (stream Ticker) {}
+    rpc StreamCandleStick(Pair) returns (stream CandleStick) {}
     
     rpc CreateOrderBook(PairParams) returns (google.protobuf.Empty) {}
     rpc DeleteOrderBook(Pair) returns (google.protobuf.Empty) {}
@@ -58,4 +59,17 @@ message Ticker {
 message Limit {
     string Price = 1;
     string Qty = 2;
+}
+
+message CandleStick {
+    string Pair = 1;
+    string Timeframe = 2;
+    google.protobuf.Timestamp OpenTime = 3;
+    google.protobuf.Timestamp CloseTime = 4;
+    string OpenPrice = 5;
+    string ClosePrice = 6;
+    string HighPrice = 7;
+    string LowPrice = 8;
+    string Volume = 9;
+    bool IsClosed = 10;
 }
