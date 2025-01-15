@@ -24,6 +24,7 @@ message PairParams {
     string Pair = 1;
     repeated int32 PricePrecisions = 2;
     int32 QtyPrecision = 3;
+    repeated string CandleStickTimeframes = 4;
 }
 
 message Trade {
