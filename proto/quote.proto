@@ -49,11 +49,13 @@ message OrderBookSnapshot {
 }
 
 message Ticker {
-    string Price = 1;
-    string Change = 2;
-    string HighPrice = 3;
-    string LowPrice = 4;
-    string Turnover = 5;
+    string Pair = 1;
+    string Price = 2;
+    string Change = 3;
+    string HighPrice = 4;
+    string LowPrice = 5;
+    string Volume = 6;
+    string Turnover = 7;
 }
 
 message Limit {
@@ -71,5 +73,6 @@ message CandleStick {
     string HighPrice = 7;
     string LowPrice = 8;
     string Volume = 9;
-    bool IsClosed = 10;
+    string Turnover = 10;
+    bool IsClosed = 11;
 }
