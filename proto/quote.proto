@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 service Quote {
-    rpc StreamPrecisedTrade(Pair) returns (stream Trade) {}
+    rpc StreamPrecisedTrades(Pair) returns (stream Trades) {}
     rpc StreamPrecisedOrderBookSnapshot(Pair) returns (stream PrecisedOrderBookSnapshots) {}
     rpc StreamTicker(Pair) returns (stream Ticker) {}
     rpc StreamCandleStick(Pair) returns (stream CandleStick) {}
@@ -26,6 +26,10 @@ message PairParams {
     repeated int32 PricePrecisions = 2;
     int32 QtyPrecision = 3;
     repeated string CandleStickTimeframes = 4;
+}
+
+message Trades {
+    repeated Trade Trades = 1;
 }
 
 message Trade {
@@ -50,7 +54,7 @@ message OrderBookSnapshot {
 
 message Ticker {
     string Pair = 1;
-    string Price = 2;
+    string LastPrice = 2;
     string Change = 3;
     string HighPrice = 4;
     string LowPrice = 5;
