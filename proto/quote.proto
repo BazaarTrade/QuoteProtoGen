@@ -68,15 +68,16 @@ message Limit {
 }
 
 message CandleStick {
-    string Pair = 1;
-    string Timeframe = 2;
-    google.protobuf.Timestamp OpenTime = 3;
-    google.protobuf.Timestamp CloseTime = 4;
-    string OpenPrice = 5;
-    string ClosePrice = 6;
-    string HighPrice = 7;
-    string LowPrice = 8;
-    string Volume = 9;
-    string Turnover = 10;
-    bool IsClosed = 11;
+    int64 ID = 1;
+    string Pair = 2;
+    string Timeframe = 3;
+    google.protobuf.Timestamp OpenTime = 4;
+    google.protobuf.Timestamp CloseTime = 5;
+    string OpenPrice = 6;
+    string ClosePrice = 7;
+    string HighPrice = 8;
+    string LowPrice = 9;
+    string Volume = 10;
+    string Turnover = 11;
+    bool IsClosed = 12;
 }
