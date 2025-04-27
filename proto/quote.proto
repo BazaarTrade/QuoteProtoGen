@@ -9,7 +9,7 @@ import "google/protobuf/empty.proto";
 
 service Quote {
     rpc StreamPrecisedTrades(Pair) returns (stream Trades) {}
-    rpc StreamPrecisedOrderBookSnapshot(Pair) returns (stream PrecisedOrderBookSnapshots) {}
+    rpc StreamPrecisedOrderBookSnapshots(Pair) returns (stream PrecisedOrderBookSnapshots) {}
     rpc StreamTicker(Pair) returns (stream Ticker) {}
     rpc StreamCandleStick(Pair) returns (stream CandleStick) {}
     
